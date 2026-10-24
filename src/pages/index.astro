@@ -38,7 +38,7 @@ const gallery = [
           </span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:10px;padding-top:4px">
-          <a href={site.cv} class="btn btn-solid">
+          <a href={site.cv} class="btn btn-solid" target="_blank" rel="noopener">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path></svg>
             View CV
           </a>
@@ -215,7 +215,7 @@ const gallery = [
         </a>
         <a href={socials.tiktok} class="rowlink">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12a4 4 0 1 0 4 4V3c.5 2.5 2.5 4.5 5 5"></path></svg>
-          <span style="flex:1 1 auto;font-size:14px;font-weight:500">TikTok</span><span class="chev mono" aria-hidden="true">→</span>
+          <span style="flex:1 1 auto;font-size:14px;font-weight:500">TikTok</span><span class="mono muted" style="font-size:12px">{socials.tiktokHandle}</span><span class="chev mono" aria-hidden="true">→</span>
         </a>
       </div>
     </section>
