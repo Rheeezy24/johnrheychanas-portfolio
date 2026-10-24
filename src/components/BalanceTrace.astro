@@ -1,0 +1,17 @@
+---
+// The orange line that wobbles and settles flat — like the robot's
+// tilt angle settling as it balances. Pure SVG + CSS, no script.
+// Shape: 60 − 44·e^(−x/260)·sin(x/26), a damped oscillation.
+interface Props { height?: number }
+const { height = 44 } = Astro.props;
+const pts: string[] = [];
+for (let x = 0; x <= 1200; x += 8) {
+  const y = 60 - 44 * Math.exp(-x / 260) * Math.sin(x / 26);
+  pts.push(`${x},${y.toFixed(1)}`);
+}
+const d = 'M' + pts.join(' L');
+---
+<svg viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" style={`display:block;width:100%;height:${height}px`}>
+  <line x1="0" y1="60" x2="1200" y2="60" stroke="var(--line2)" stroke-width="1" stroke-dasharray="4 6" vector-effect="non-scaling-stroke" />
+  <path class="trace" d={d} fill="none" stroke="var(--acc)" stroke-width="1.75" vector-effect="non-scaling-stroke" stroke-linejoin="round" />
+</svg>

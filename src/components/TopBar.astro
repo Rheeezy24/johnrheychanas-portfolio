@@ -1,0 +1,19 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+interface Props { back?: boolean }
+const { back = false } = Astro.props;
+---
+<div class="fade" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:4px 4px 10px">
+  {back ? (
+    <a href="/#projects" class="navlink back mono" style="display:inline-flex;align-items:center;gap:8px;min-height:36px;font-size:13px">
+      <span class="arrow" aria-hidden="true">←</span>All projects
+    </a>
+  ) : (
+    <nav aria-label="Primary" class="mono" style="display:flex;flex-wrap:wrap;gap:20px;font-size:13px">
+      <a href="#projects" class="navlink">projects</a>
+      <a href="#experience" class="navlink">experience</a>
+      <a href="#contact" class="navlink">contact</a>
+    </nav>
+  )}
+  <ThemeToggle />
+</div>

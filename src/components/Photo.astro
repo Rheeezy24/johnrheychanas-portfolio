@@ -1,0 +1,62 @@
+---
+// A photo tile. Click it and it opens in the photo viewer.
+// Without `src` it shows a dashed placeholder with `label`, so the
+// layout works before your real photos are in.
+//
+// To use a real photo:
+//   1. put it in src/assets/  (e.g. src/assets/robot/hero.jpg)
+//   2. at the top of the page:  import robotHero from '../assets/robot/hero.jpg';
+//   3. pass it in:              <Photo src={robotHero} ... />
+// Astro then resizes and compresses it for you.
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  id: string;          // unique name for this photo
+  group: string;       // photos in the same group can be flicked through with the arrows
+  label: string;       // placeholder text
+  caption?: string;    // shown under the photo in the viewer
+  aspect?: string;     // tile shape, e.g. "16 / 10"
+  src?: ImageMetadata;
+  alt?: string;
+  hint?: string;
+  bw?: boolean;        // black & white until hovered
+  zoomIcon?: boolean;
+  duplicate?: boolean; // used by the looping gallery strip
+  class?: string;
+  style?: string;
+}
+
+const {
+  id, group, label, caption = '', aspect = '4 / 3', src, alt, hint, bw = false,
+  zoomIcon = false, duplicate = false, class: cls = '', style = '',
+} = Astro.props;
+
+const [aw, ah] = aspect.split('/').map((n) => parseFloat(n));
+const ratio = src ? src.width / src.height : aw / ah;
+const full = src ? (await getImage({ src, width: 1800 })).src : undefined;
+const altText = alt ?? (caption || label);
+---
+<button
+  type="button"
+  class:list={['ph', cls, { filled: !!src, bw }]}
+  style={`aspect-ratio: ${aspect}; ${style}`}
+  data-lb-group={group}
+  data-lb-id={id}
+  data-label={label}
+  data-caption={caption}
+  data-aspect={ratio.toFixed(4)}
+  data-full={full}
+  aria-label={duplicate ? undefined : `Enlarge photo: ${altText}`}
+  aria-hidden={duplicate ? 'true' : undefined}
+  tabindex={duplicate ? -1 : undefined}
+>
+  {src
+    ? <Image src={src} alt={altText} widths={[480, 960, 1440]} sizes="(max-width: 900px) 100vw, 720px" />
+    : <span class="ph-in mono">{label}{hint && <><br />{hint}</>}</span>}
+  {zoomIcon && (
+    <span class="ph-zoom" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg>
+    </span>
+  )}
+</button>

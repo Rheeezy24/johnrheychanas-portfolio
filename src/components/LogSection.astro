@@ -1,0 +1,9 @@
+---
+// One numbered section of a build log
+interface Props { n?: string; title: string; id?: string }
+const { n, title, id } = Astro.props;
+---
+<section id={id} class="card rv" style="padding:clamp(24px,4vw,36px);display:flex;flex-direction:column;gap:18px">
+  <h2 class="label">{n && <span style="color:var(--acc-t)">{n}</span>}{title}</h2>
+  <slot />
+</section>

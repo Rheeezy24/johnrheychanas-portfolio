@@ -1,16 +1,253 @@
 ---
----
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import Photo from '../components/Photo.astro';
+import BalanceTrace from '../components/BalanceTrace.astro';
+import { site, socials, now, experience, toolbox } from '../data/site';
+import me from '../assets/me.jpg';
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+// Real photos: put them in src/assets/ and import them here, e.g.
+//   import me from '../assets/me.jpg';
+// then use <Photo src={me} ... />.
+
+// Gallery strip — add your photos here as you take them
+const gallery = [
+  { id: 'g1', label: '[PHOTO 1]', w: 168 },
+  { id: 'g2', label: '[PHOTO 2]', w: 128 },
+  { id: 'g3', label: '[PHOTO 3]', w: 196 },
+  { id: 'g4', label: '[PHOTO 4]', w: 128 },
+  { id: 'g5', label: '[PHOTO 5]', w: 168 },
+  { id: 'g6', label: '[PHOTO 6]', w: 128 },
+];
+---
+<Base>
+  <TopBar />
+
+  <!-- ROW 1 — profile + right now -->
+  <div class="bento">
+    <section class="card fade d1 s8" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end">
+      <Photo id="me" group="me" src={me} alt="John Rhey Chanas" label="[YOUR PHOTO]" caption={site.name} aspect="132 / 160"
+        style="flex:0 0 auto;width:132px;border-radius:16px;border-style:solid" />
+      <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px">
+        <h1 class="disp" style="font-size:clamp(36px,5vw,58px);line-height:.95">{site.name}</h1>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span class="ink2" style="font-size:16px">{site.role}</span>
+          <span class="mono muted" style="display:flex;align-items:center;gap:6px;font-size:13px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+            {site.location}
+          </span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;padding-top:4px">
+          <a href={site.cv} class="btn btn-solid">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path></svg>
+            View CV
+          </a>
+          <a href={`mailto:${site.email}`} class="btn btn-line">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+            Email me
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card fade d2 s4" style="padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:18px">
+      <h2 class="label"><span class="dot pulse"></span>Right now</h2>
+      <dl style="margin:0;display:flex;flex-direction:column;gap:12px;font-size:14.5px">
+        {now.map((n) => (
+          <div style="display:flex;justify-content:space-between;gap:12px">
+            <dt class="muted">{n.label}</dt><dd style="margin:0;text-align:right">{n.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <BalanceTrace />
+        <span class="mono muted" style="font-size:11px">θ(t) · balance trace</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- ROW 2 — about + experience -->
+  <div class="bento">
+    <section class="card fade d3 s7" style="display:flex;flex-direction:column;gap:16px">
+      <h2 class="label">About</h2>
+      <p class="lead">I’m a second-year Mechatronics Engineering student in Hamilton. I like building things that move — robots, the code that runs them, and apps that help students get their work done.</p>
+      <p class="ink2" style="font-size:15.5px;line-height:1.65">This summer I’m interning with the Production Engineering team at Gallagher. [Write: what you’re aiming for next, in your own words.]</p>
+    </section>
+
+    <section id="experience" class="card fade d4 s5" style="display:flex;flex-direction:column;gap:18px">
+      <h2 class="label">Experience</h2>
+      <div style="position:relative">
+        <span aria-hidden="true" style="position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line)"></span>
+        <ol style="margin:0;padding:0 0 0 22px;list-style:none;display:flex;flex-direction:column;gap:18px">
+          {experience.map((x, i) => (
+            <li style="position:relative;display:flex;flex-direction:column;gap:3px">
+              <span aria-hidden="true" style={i === 0
+                ? 'position:absolute;left:-22px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--acc)'
+                : 'position:absolute;left:-22px;top:4px;width:11px;height:11px;border-radius:50%;border:1.5px solid var(--line2);background:var(--card)'}></span>
+              <span style="display:flex;justify-content:space-between;gap:12px;font-size:15px;font-weight:500">
+                <span>{x.title}</span><span class="mono muted" style="font-size:12px;font-weight:400;white-space:nowrap">{x.when}</span>
+              </span>
+              {x.detail && <span class="muted" style="font-size:13.5px">{x.detail}</span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <!-- ROW 3 — projects -->
+  <section id="projects" class="card rv" style="padding:clamp(16px,2vw,22px);display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 8px 0">
+      <h2 class="label">Projects</h2>
+      <span class="mono muted" style="font-size:12px">3 builds</span>
+    </div>
+    <div class="bento">
+      <!-- Self-balancing robot -->
+      <article class="tile s7" style="display:flex;flex-direction:column;gap:10px">
+        <Photo id="rHero" group="robot" label="[ROBOT HERO PHOTO]" hint="plain background · robot upright" caption="Self-balancing robot" aspect="16 / 10" zoomIcon style="border-radius:10px" />
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <Photo id="rCad" group="robot" label="[CAD]" caption="The chassis in Fusion 360" style="border-radius:10px" />
+          <Photo id="rWire" group="robot" label="[WIRING]" caption="Power system and wiring" style="border-radius:10px" />
+          <Photo id="rDemo" group="robot" label="[DEMO]" caption="Balancing demo" style="border-radius:10px" />
+        </div>
+        <div style="padding:14px 10px 8px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px">
+            <h3 class="disp" style="font-size:26px">Self-Balancing Robot</h3>
+            <span class="mono muted" style="font-size:12px">2026 · open source</span>
+          </div>
+          <div class="seg" role="tablist" aria-label="Robot details" data-tabs="robot">
+            <span class="seg-ind" aria-hidden="true"></span>
+            <button type="button" role="tab" aria-selected="true">Overview</button>
+            <button type="button" role="tab" aria-selected="false">Hardware</button>
+            <button type="button" role="tab" aria-selected="false">Firmware</button>
+          </div>
+          <div class="panels">
+            <p class="panel ink2" data-panel-of="robot" data-on="1" style="font-size:15px;line-height:1.6">My first full build. A two-wheeled robot that keeps itself upright — from a chassis I designed and printed, to the power system and the firmware that reads the IMU and drives the motors.</p>
+            <div class="panel chips" data-panel-of="robot" data-on="0" style="align-content:flex-start">
+              <span class="chip">Fusion 360 chassis</span><span class="chip">3D-printed</span><span class="chip">Dual-voltage power</span><span class="chip">IMU</span><span class="chip">Motor driver</span><span class="chip">[MICROCONTROLLER]</span>
+            </div>
+            <div class="panel chips" data-panel-of="robot" data-on="0" style="align-content:flex-start">
+              <span class="chip">Embedded C++</span><span class="chip">IMU over I²C</span><span class="chip">PWM motor output</span><span class="chip">[CONTROL METHOD]</span>
+            </div>
+          </div>
+          <a href="/projects/self-balancing-robot" class="more">Read the build log <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <div class="s5" style="display:flex;flex-direction:column;gap:14px">
+        <!-- Tandem -->
+        <article class="tile" style="flex:1 1 auto;display:flex;flex-direction:column;gap:10px">
+          <div style="flex:1 1 auto;min-height:190px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr;gap:10px;padding:14px 18px 0;border-radius:10px;background:var(--chip);overflow:hidden">
+            <Photo id="t1" group="tandem" label="[SCREEN]" caption="Tandem — [screen name]" aspect="9 / 14" style="border-radius:14px 14px 0 0;border-bottom:0;aspect-ratio:auto;height:100%" />
+            <Photo id="t2" group="tandem" label="[SCREEN]" caption="Tandem — [screen name]" aspect="9 / 14" style="border-radius:14px 14px 0 0;border-bottom:0;aspect-ratio:auto;height:100%;transform:translateY(14px)" />
+            <Photo id="t3" group="tandem" label="[SCREEN]" caption="Tandem — [screen name]" aspect="9 / 14" style="border-radius:14px 14px 0 0;border-bottom:0;aspect-ratio:auto;height:100%" />
+          </div>
+          <div style="padding:10px 10px 6px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px">
+              <h3 class="disp" style="font-size:22px">Tandem</h3>
+              <span class="pill-status"><span class="dot pulse" style="width:6px;height:6px"></span>In progress</span>
+            </div>
+            <p class="ink2" style="font-size:14.5px;line-height:1.55">A study assistant — summaries of your course files, what to do first, and a calendar that fills itself.</p>
+            <a href="/projects/tandem" class="more" style="font-size:14px">Read the build log <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <!-- Robotic arm — coming soon -->
+        <article style="border:1px dashed var(--line2);border-radius:16px;display:flex;align-items:stretch;overflow:hidden;min-height:168px">
+          <div style="flex:1 1 auto;padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between;gap:10px">
+            <span class="mono muted" style="align-self:flex-start;padding:4px 10px;border-radius:999px;border:1px solid var(--line2);font-size:11px">Coming soon</span>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <h3 class="disp" style="font-size:22px">Robotic Arm</h3>
+              <p class="muted" style="font-size:14px;line-height:1.5">The next build — one that actually works.</p>
+            </div>
+          </div>
+          <div aria-hidden="true" style="flex:0 0 140px;position:relative">
+            <div style="position:absolute;left:50%;bottom:26px;width:0;height:0">
+              <div class="arm1" style="position:absolute;left:-5px;bottom:0;width:10px;height:66px;border-radius:5px;background:var(--line2)">
+                <span style="position:absolute;left:-3px;bottom:-5px;width:16px;height:16px;border-radius:50%;border:2px solid var(--acc);background:var(--bg)"></span>
+                <div class="arm2" style="position:absolute;left:1px;bottom:100%;width:8px;height:52px;border-radius:4px;background:var(--muted)">
+                  <span style="position:absolute;left:-4px;bottom:-7px;width:16px;height:16px;border-radius:50%;border:2px solid var(--acc);background:var(--bg)"></span>
+                  <span class="grip" style="position:absolute;left:-8px;top:-9px;width:24px;height:10px;border:2px solid var(--ink);border-bottom:0"></span>
+                </div>
+              </div>
+              <span style="position:absolute;left:-36px;bottom:-12px;width:72px;height:12px;border-radius:4px;background:var(--line)"></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW 4 — toolbox + contact -->
+  <div class="bento">
+    <section class="card rv s7" style="display:flex;flex-direction:column;gap:20px">
+      <h2 class="label">Toolbox</h2>
+      {toolbox.map((t) => (
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span class="muted" style="font-size:13px">{t.group}</span>
+          <div class="chips">{t.items.map((i) => <span class="chip">{i}</span>)}</div>
+        </div>
+      ))}
+    </section>
+
+    <section id="contact" class="card rv s5" style="display:flex;flex-direction:column;gap:14px">
+      <h2 class="label">Contact</h2>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="rowlink" style="padding:0 8px 0 14px;min-height:54px">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+          <a href={`mailto:${site.email}`} style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column">
+            <span style="font-size:14px;font-weight:500">Email</span>
+            <span class="mono muted" style="font-size:12px;overflow:hidden;text-overflow:ellipsis">{site.email}</span>
+          </a>
+          <button type="button" class="btn btn-line mono" data-copy={site.email} style="min-height:36px;padding:0 12px;border-radius:9px;font-size:12px;font-weight:400">copy</button>
+        </div>
+        <a href={socials.linkedin} class="rowlink">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"></path></svg>
+          <span style="flex:1 1 auto;font-size:14px;font-weight:500">LinkedIn</span><span class="chev mono" aria-hidden="true">→</span>
+        </a>
+        <a href={socials.github} class="rowlink">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"></path></svg>
+          <span style="flex:1 1 auto;font-size:14px;font-weight:500">GitHub</span><span class="chev mono" aria-hidden="true">→</span>
+        </a>
+        <a href={socials.instagram} class="rowlink">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><path d="M17.5 6.5v.01"></path></svg>
+          <span style="flex:1 1 auto;font-size:14px;font-weight:500">Instagram</span><span class="mono muted" style="font-size:12px">{socials.instagramHandle}</span><span class="chev mono" aria-hidden="true">→</span>
+        </a>
+        <a href={socials.tiktok} class="rowlink">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12a4 4 0 1 0 4 4V3c.5 2.5 2.5 4.5 5 5"></path></svg>
+          <span style="flex:1 1 auto;font-size:14px;font-weight:500">TikTok</span><span class="chev mono" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ROW 5 — learning in public + gallery -->
+  <div class="bento">
+    <section class="card rv s4" style="display:flex;flex-direction:column;justify-content:space-between;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2 class="label">Learning in public</h2>
+        <p style="font-size:16px;line-height:1.55">Step-by-step electronics guides on Instagram and TikTok. First series: lighting up an LED the easiest way.</p>
+      </div>
+      <a href={socials.instagram} class="more" style="font-size:14px">See the series <span class="arrow" aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="card rv s8" style="padding:clamp(18px,2.4vw,24px) 0;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 clamp(18px,2.4vw,24px)">
+        <h2 class="label">Gallery</h2>
+        <span class="mono muted" style="font-size:11px">hover to pause · tap to open</span>
+      </div>
+      <div class="marq-wrap">
+        <div class="marq">
+          {[false, true].map((dup) => gallery.map((g) => (
+            <Photo id={g.id} group="gallery" label={g.label} caption="[Caption]" aspect={`${g.w} / 128`} bw duplicate={dup} />
+          )))}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="mono muted" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding:18px 6px 0;font-size:12px">
+    <span>© {new Date().getFullYear()} {site.name}</span>
+    <span>{site.location}</span>
+  </footer>
+</Base>

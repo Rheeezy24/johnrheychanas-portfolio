@@ -1,0 +1,144 @@
+---
+// The photo viewer. Any <Photo> on the page opens here: the photo grows
+// out of its tile into the middle of the screen (iPhone Photos style),
+// and shrinks back into place when closed.
+// Keyboard: Esc closes, ← → flick through the group.
+---
+<div class="lb" data-lightbox role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button type="button" class="lb-back" data-lb-close aria-label="Close photo"></button>
+  <div class="lb-frame"><div class="lb-media" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"></div></div>
+  <button type="button" class="lb-btn lb-ui lb-close" data-lb-close aria-label="Close" style="position:fixed;top:20px;right:20px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+  </button>
+  <div class="lb-ui" style="position:fixed;left:16px;right:16px;bottom:24px;display:flex;align-items:center;justify-content:center;gap:14px">
+    <button type="button" class="lb-btn" data-lb-prev aria-label="Previous photo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center">
+      <span data-lb-caption style="font-size:15px;font-weight:500"></span>
+      <span data-lb-count class="mono muted" style="font-size:11px"></span>
+    </div>
+    <button type="button" class="lb-btn" data-lb-next aria-label="Next photo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  const lb = document.querySelector<HTMLElement>('[data-lightbox]')!;
+  const frame = lb.querySelector<HTMLElement>('.lb-frame')!;
+  const media = lb.querySelector<HTMLElement>('.lb-media')!;
+  const caption = lb.querySelector<HTMLElement>('[data-lb-caption]')!;
+  const count = lb.querySelector<HTMLElement>('[data-lb-count]')!;
+  const prevBtn = lb.querySelector<HTMLButtonElement>('[data-lb-prev]')!;
+  const nextBtn = lb.querySelector<HTMLButtonElement>('[data-lb-next]')!;
+  const closeBtn = lb.querySelector<HTMLButtonElement>('.lb-close')!;
+  const DURATION = 600;
+
+  let items: HTMLElement[] = [];
+  let index = 0;
+  let source: HTMLElement | null = null;
+  let isOpen = false;
+
+  // All photos in a group, skipping the copies used by the looping strip
+  function groupItems(group: string) {
+    const seen = new Set<string>();
+    return [...document.querySelectorAll<HTMLElement>(`[data-lb-group="${group}"]`)].filter((el) => {
+      const id = el.dataset.lbId || '';
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+  }
+
+  // Where the photo should end up: as big as fits, centred
+  function targetRect(el: HTMLElement) {
+    const a = parseFloat(el.dataset.aspect || '1') || 1;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const w = Math.min(Math.min(vw - 48, 1080), (vh - 176) * a);
+    const h = w / a;
+    return { top: Math.max(24, (vh - h) / 2 - 28), left: (vw - w) / 2, width: w, height: h };
+  }
+
+  function place(r: { top: number; left: number; width: number; height: number }, radius: number, opacity = 1, scale = 1) {
+    Object.assign(frame.style, {
+      top: `${r.top}px`, left: `${r.left}px`, width: `${r.width}px`, height: `${r.height}px`,
+      borderRadius: `${radius}px`, opacity: String(opacity), transform: `scale(${scale})`,
+    });
+  }
+
+  function fill(el: HTMLElement) {
+    media.replaceChildren();
+    const img = el.querySelector('img');
+    if (img) {
+      const big = new Image();
+      big.src = el.dataset.full || img.currentSrc || img.src;
+      big.alt = img.alt;
+      media.append(big);
+    } else {
+      const s = document.createElement('span');
+      s.className = 'mono lb-label';
+      s.textContent = el.dataset.label || '';
+      media.append(s);
+    }
+    caption.textContent = el.dataset.caption || '';
+    count.textContent = items.length > 1 ? `${index + 1} / ${items.length}` : '';
+    prevBtn.hidden = nextBtn.hidden = items.length < 2;
+  }
+
+  function open(el: HTMLElement) {
+    source = el;
+    items = groupItems(el.dataset.lbGroup || '');
+    index = Math.max(0, items.findIndex((x) => x.dataset.lbId === el.dataset.lbId));
+    fill(items[index]);
+    frame.classList.remove('anim');
+    place(el.getBoundingClientRect(), 12);       // start exactly on top of the tile...
+    lb.classList.add('open');
+    document.documentElement.style.overflow = 'hidden';
+    frame.getBoundingClientRect();               // (let the browser register the start position)
+    frame.classList.add('anim');
+    requestAnimationFrame(() => place(targetRect(items[index]), 20)); // ...then grow to the middle
+    isOpen = true;
+    closeBtn.focus({ preventScroll: true });
+  }
+
+  function close() {
+    if (!isOpen) return;
+    isOpen = false;
+    const current = items[index];
+    if (source && current.dataset.lbId === source.dataset.lbId) {
+      place(source.getBoundingClientRect(), 12, 0.6);   // shrink back into the tile
+    } else {
+      place(targetRect(current), 20, 0, 0.92);          // flicked to another photo: just fade
+    }
+    lb.classList.remove('open');
+    setTimeout(() => {
+      if (isOpen) return;
+      frame.classList.remove('anim');
+      document.documentElement.style.overflow = '';
+      source?.focus({ preventScroll: true });
+    }, DURATION);
+  }
+
+  function step(dir: number) {
+    if (items.length < 2) return;
+    index = (index + dir + items.length) % items.length;
+    fill(items[index]);
+    place(targetRect(items[index]), 20);
+  }
+
+  document.addEventListener('click', (e) => {
+    const tile = (e.target as HTMLElement).closest<HTMLElement>('[data-lb-group]');
+    if (tile && !lb.contains(tile)) { e.preventDefault(); open(tile); }
+  });
+  lb.querySelectorAll('[data-lb-close]').forEach((b) => b.addEventListener('click', close));
+  prevBtn.addEventListener('click', () => step(-1));
+  nextBtn.addEventListener('click', () => step(1));
+  document.addEventListener('keydown', (e) => {
+    if (!isOpen) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === 'ArrowRight') step(1);
+  });
+  window.addEventListener('resize', () => { if (isOpen) place(targetRect(items[index]), 20); });
+</script>

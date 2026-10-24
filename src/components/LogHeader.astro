@@ -1,0 +1,21 @@
+---
+// The top card of a build log page
+interface Props { kicker: string; title: string; intro: string; meta: { label: string; value: string }[]; status?: string }
+const { kicker, title, intro, meta, status } = Astro.props;
+---
+<header class="card fade d1" style="padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">
+    <div class="label">{kicker}</div>
+    {status && <span class="pill-status"><span class="dot pulse" style="width:6px;height:6px"></span>{status}</span>}
+  </div>
+  <h1 class="disp" style="font-size:clamp(40px,6.4vw,76px);line-height:.95">{title}</h1>
+  <p class="ink2" style="max-width:620px;font-size:clamp(17px,1.8vw,20px);line-height:1.5">{intro}</p>
+  <dl style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:14px;padding-top:18px;border-top:1px solid var(--line)">
+    {meta.map((m) => (
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <dt class="mono muted" style="font-size:11px;text-transform:uppercase">{m.label}</dt>
+        <dd style="margin:0;font-size:15px">{m.value}</dd>
+      </div>
+    ))}
+  </dl>
+</header>

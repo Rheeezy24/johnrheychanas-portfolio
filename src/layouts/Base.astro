@@ -1,0 +1,78 @@
+---
+// The frame every page sits in: <head>, fonts, colours, the photo viewer
+// and the small scripts shared by all pages.
+import '../styles/global.css';
+import Lightbox from '../components/Lightbox.astro';
+import { site } from '../data/site';
+
+interface Props { title?: string; description?: string; narrow?: boolean; progress?: boolean }
+const { title = site.name, description = site.description, narrow = false, progress = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url);
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#F4F4F1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" />
+    <!-- Set the saved theme before the page paints, so there's no flash -->
+    <script is:inline>
+      (function () {
+        var r = document.documentElement;
+        r.classList.add('js');
+        try { if (localStorage.getItem('theme') === 'dark') r.dataset.theme = 'dark'; } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    {progress && <span class="prog" aria-hidden="true" style="position:fixed;top:0;left:0;right:0;height:2px;z-index:30;background:var(--acc)"></span>}
+    <main class:list={['wrap', { narrow }]}>
+      <slot />
+    </main>
+    <Lightbox />
+
+    <script>
+      // Scroll reveal for browsers without CSS scroll animations (e.g. Firefox)
+      if (!CSS.supports('animation-timeline: view()')) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+        }, { rootMargin: '0px 0px -10% 0px' });
+        document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+      }
+
+      // Segmented tabs (Overview / Hardware / Firmware)
+      document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((box) => {
+        const buttons = [...box.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+        const ind = box.querySelector<HTMLElement>('.seg-ind');
+        const panels = [...document.querySelectorAll<HTMLElement>(`[data-panel-of="${box.dataset.tabs}"]`)];
+        buttons.forEach((b, i) => b.addEventListener('click', () => {
+          buttons.forEach((x, j) => x.setAttribute('aria-selected', String(i === j)));
+          panels.forEach((p, j) => (p.dataset.on = i === j ? '1' : '0'));
+          if (ind) ind.style.transform = `translateX(${i * 100}%)`;
+        }));
+      });
+
+      // "copy" buttons
+      document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+        b.addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText(b.dataset.copy || ''); } catch {}
+          const old = b.textContent;
+          b.textContent = 'copied';
+          b.style.color = 'var(--acc-t)';
+          setTimeout(() => { b.textContent = old; b.style.color = ''; }, 1800);
+        });
+      });
+    </script>
+  </body>
+</html>

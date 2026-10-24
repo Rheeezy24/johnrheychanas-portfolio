@@ -1,0 +1,11 @@
+---
+interface Props { href: string; title: string }
+const { href, title } = Astro.props;
+---
+<a href={href} class="card rv rowlink" style="justify-content:space-between;gap:16px;padding:clamp(22px,3vw,30px);border-radius:22px">
+  <span style="display:flex;flex-direction:column;gap:6px">
+    <span class="label">Next project</span>
+    <span class="disp" style="font-size:clamp(26px,3.4vw,36px)">{title}</span>
+  </span>
+  <span class="arrow" aria-hidden="true" style="font-size:26px">→</span>
+</a>
