@@ -4,10 +4,12 @@ import TopBar from '../components/TopBar.astro';
 import Photo from '../components/Photo.astro';
 import BalanceTrace from '../components/BalanceTrace.astro';
 import { site, socials, now, experience, toolbox } from '../data/site';
-import me from '../assets/me.jpg';
+import me from '../assets/me-square.jpg';
+import robotCad from '../assets/robot-cad.jpg';
+import robotCircuit from '../assets/robot-circuit.jpg';
 
 // Real photos: put them in src/assets/ and import them here, e.g.
-//   import me from '../assets/me.jpg';
+//   import me from '../assets/me-square.jpg';
 // then use <Photo src={me} ... />.
 
 // Gallery strip — add your photos here as you take them
@@ -25,11 +27,11 @@ const gallery = [
 
   <!-- ROW 1 — profile + right now -->
   <div class="bento">
-    <section class="card fade d1 s8" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end">
-      <Photo id="me" group="me" src={me} alt="John Rhey Chanas" label="[YOUR PHOTO]" caption={site.name} aspect="132 / 160"
-        style="flex:0 0 auto;width:132px;border-radius:16px;border-style:solid" />
+    <section class="card fade d1 s8" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <Photo id="me" group="me" src={me} alt="John Rhey Chanas" label="[YOUR PHOTO]" caption={site.name} aspect="1 / 1"
+        style="flex:0 0 auto;width:120px;border-radius:16px;border-style:solid" />
       <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px">
-        <h1 class="disp" style="font-size:clamp(36px,5vw,58px);line-height:.95">{site.name}</h1>
+        <h1 class="disp" style="font-size:clamp(30px,3.6vw,42px);line-height:1">{site.name}</h1>
         <div style="display:flex;flex-direction:column;gap:6px">
           <span class="ink2" style="font-size:16px">{site.role}</span>
           <span class="mono muted" style="display:flex;align-items:center;gap:6px;font-size:13px">
@@ -104,10 +106,10 @@ const gallery = [
     <div class="bento">
       <!-- Self-balancing robot -->
       <article class="tile s7" style="display:flex;flex-direction:column;gap:10px">
-        <Photo id="rHero" group="robot" label="[ROBOT HERO PHOTO]" hint="plain background · robot upright" caption="Self-balancing robot" aspect="16 / 10" zoomIcon style="border-radius:10px" />
+        <Photo id="rHero" group="robot" src={robotCad} alt="Self-balancing robot CAD model" label="[ROBOT HERO PHOTO]" hint="plain background · robot upright" caption="Self-balancing robot" aspect="16 / 10" zoomIcon style="border-radius:10px" />
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
-          <Photo id="rCad" group="robot" label="[CAD]" caption="The chassis in Fusion 360" style="border-radius:10px" />
-          <Photo id="rWire" group="robot" label="[WIRING]" caption="Power system and wiring" style="border-radius:10px" />
+          <Photo id="rCad" group="robot" src={robotCad} alt="Fusion 360 CAD model of the robot" label="[CAD]" caption="The chassis in Fusion 360" style="border-radius:10px" />
+          <Photo id="rWire" group="robot" src={robotCircuit} alt="Robot circuit diagram" label="[WIRING]" caption="Circuit diagram" style="border-radius:10px" />
           <Photo id="rDemo" group="robot" label="[DEMO]" caption="Balancing demo" style="border-radius:10px" />
         </div>
         <div style="padding:14px 10px 8px;display:flex;flex-direction:column;gap:14px">

@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import TopBar from '../../components/TopBar.astro';
 import Photo from '../../components/Photo.astro';
+import cad from '../../assets/robot-cad.jpg';
+import circuit from '../../assets/robot-circuit.jpg';
 import LogHeader from '../../components/LogHeader.astro';
 import LogSection from '../../components/LogSection.astro';
 import NextProject from '../../components/NextProject.astro';
@@ -81,7 +83,7 @@ const signal = [
   <LogSection n="03" title="Designing the chassis">
     <p class="prose">I designed the chassis in Fusion 360 to hold every mechanical and electronic part, then 3D-printed it. [Write: layout choices — where the battery sits and why, how the motors mount, how many print iterations.]</p>
     <div class="grid-auto" style="--min:260px">
-      <Photo id="cad" group="robot" label="[CAD RENDER]" caption="Chassis in Fusion 360" style="border-radius:14px" />
+      <Photo id="cad" group="robot" src={cad} alt="Fusion 360 CAD model of the self-balancing robot" label="[CAD RENDER]" caption="Chassis in Fusion 360" style="border-radius:14px" />
       <Photo id="print" group="robot" label="[PRINTED PARTS]" caption="Printed chassis parts" style="border-radius:14px" />
     </div>
   </LogSection>
@@ -90,7 +92,7 @@ const signal = [
     <p class="prose">A dual-voltage power system, with the IMU, motor driver and microcontroller connected over I²C and PWM. [Write: the parts in plain words, why two voltages, and what you’d wire differently.]</p>
     <div class="grid-auto" style="--min:260px">
       <Photo id="wire" group="robot" label="[WIRING CLOSE-UP]" caption="Wiring close-up" style="border-radius:14px" />
-      <Photo id="schem" group="robot" label="[SCHEMATIC]" caption="Wiring schematic" style="border-radius:14px" />
+      <Photo id="schem" group="robot" src={circuit} alt="Circuit diagram: Arduino Uno, MPU6050, L298N and two DC motors" label="[SCHEMATIC]" caption="Circuit diagram (Cirkit Designer)" style="border-radius:14px" />
     </div>
   </LogSection>
 
