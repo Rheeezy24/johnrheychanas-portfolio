@@ -1,0 +1,11 @@
+---
+// A looping, muted video tile. Put the .mp4 (and a poster .jpg) in public/.
+interface Props { src: string; poster?: string; label: string; aspect?: string; style?: string; class?: string; }
+const { src, poster, label, aspect = '1 / 1', style = '', class: cls = '' } = Astro.props;
+---
+<div class:list={['ph', 'filled', cls]} style={`aspect-ratio: ${aspect}; position:relative; overflow:hidden; ${style}`}>
+  <video src={src} poster={poster} autoplay muted loop playsinline preload="metadata" aria-label={label}
+    style="width:100%;height:100%;object-fit:cover;display:block"></video>
+  <a href={src} target="_blank" rel="noopener" class="mono" aria-label={`Open video: ${label}`}
+    style="position:absolute;right:8px;bottom:8px;font-size:11px;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;text-decoration:none">▶ Full</a>
+</div>

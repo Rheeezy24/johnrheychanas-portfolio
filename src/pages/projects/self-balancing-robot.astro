@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import TopBar from '../../components/TopBar.astro';
 import Photo from '../../components/Photo.astro';
+import VideoTile from '../../components/VideoTile.astro';
 import cad from '../../assets/robot-cad.jpg';
 import circuit from '../../assets/robot-circuit.jpg';
 import LogHeader from '../../components/LogHeader.astro';
@@ -127,7 +128,7 @@ const signal = [
       <Photo id="g1" group="robot" label="[BUILD 1]" caption="[Caption]" aspect="1 / 1" style="border-radius:14px" />
       <Photo id="g2" group="robot" label="[BUILD 2]" caption="[Caption]" aspect="1 / 1" style="border-radius:14px" />
       <Photo id="g3" group="robot" label="[BUILD 3]" caption="[Caption]" aspect="1 / 1" style="border-radius:14px" />
-      <Photo id="demo" group="robot" label="[DEMO]" caption="Balancing demo" aspect="1 / 1" style="border-radius:14px" />
+      <VideoTile src="/robot-demo.mp4" poster="/robot-demo.jpg" label="Balancing demo" aspect="1 / 1" style="border-radius:14px" />
     </div>
   </LogSection>
 

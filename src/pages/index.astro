@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import TopBar from '../components/TopBar.astro';
 import Photo from '../components/Photo.astro';
+import VideoTile from '../components/VideoTile.astro';
 import BalanceTrace from '../components/BalanceTrace.astro';
 import { site, socials, now, experience, toolbox } from '../data/site';
 import me from '../assets/me-square.jpg';
@@ -110,7 +111,7 @@ const gallery = [
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
           <Photo id="rCad" group="robot" src={robotCad} alt="Fusion 360 CAD model of the robot" label="[CAD]" caption="The chassis in Fusion 360" style="border-radius:10px" />
           <Photo id="rWire" group="robot" src={robotCircuit} alt="Robot circuit diagram" label="[WIRING]" caption="Circuit diagram" style="border-radius:10px" />
-          <Photo id="rDemo" group="robot" label="[DEMO]" caption="Balancing demo" style="border-radius:10px" />
+          <VideoTile src="/robot-demo.mp4" poster="/robot-demo.jpg" label="Balancing demo" aspect="4 / 3" style="border-radius:10px" />
         </div>
         <div style="padding:14px 10px 8px;display:flex;flex-direction:column;gap:14px">
           <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px">
